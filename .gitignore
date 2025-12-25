@@ -1,5 +1,5 @@
-./assets/*
-./build/*
+assets/
+build/
 
 .DS_Store
 _deps
