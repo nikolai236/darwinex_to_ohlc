@@ -1,0 +1,6 @@
+./assets/*
+./build/*
+
+.DS_Store
+_deps
+.env
