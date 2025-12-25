@@ -117,21 +117,25 @@ int main() {
 	BatchOrganizer organizer{unzipped_dir};
 
 	with_logger(log_path, "write", symbol, [&](spdlog::logger& logger) {
-		for (const auto& entry : fs::directory_iterator(download_symbol_dir)) {
+		for (const auto& entry : fs::directory_iterator(unzipped_dir)) {
 
 			const auto name = entry.path().filename().string();
 			auto [a, b] = organizer.get_batch(name);
+			if (a.size() ==0 && b.size() == 0) continue;
 
 			MultiFileReader ask(a, unzipped_dir);
 			MultiFileReader bid(b, unzipped_dir);
 
-			AskBidReader reader { std::move(ask), std::move(bid) };
+			const std::int64_t f = 15 * 1000;
+			AskBidMerger reader { std::move(ask), std::move(bid), f };
 
 			Candle c;
 			std::vector<Candle> candles{};
 
 			while(reader.get_next_candle(c)) candles.push_back(c);
 			write_candles_to_db(candles, db_path, symbol);
+
+			organizer.delete_key(name);
 		}
 	});
 }

@@ -80,7 +80,8 @@ BatchOrganizer::get_batch(const std::string& filename) const {
 }
 
 void
-BatchOrganizer::delete_key(const std::string& key) {
+BatchOrganizer::delete_key(const std::string& name) {
+	const auto key = get_key(name);
 	dict.erase(key);
 }
 

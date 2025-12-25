@@ -21,7 +21,7 @@ get_tick_entry(MultiFileReader& in, TickEntry& out) {
 }
 
 bool
-AskBidReader::get_next_mid_tick(TickEntry& out) {
+AskBidMerger::get_next_mid_tick(TickEntry& out) {
 	while (true) {
 		if (!has_curr_ask && !has_curr_bid) return false;
 		bool use_bid;
@@ -68,7 +68,7 @@ AskBidReader::get_next_mid_tick(TickEntry& out) {
 // require('fs').readFileSync(filePath, 'utf8').split('\n').map(s => s.split(',').map(r => Number(r))).filter(k => k.length >= 5).every(([x, o, h, l, c]) => h >= o && h >= c && l <= o && l <= c)
 
 bool
-AskBidReader::get_next_candle(Candle& out, std::int64_t frame) {
+AskBidMerger::get_next_candle(Candle& out) {
 	TickEntry tick{};
 
 	if (has_buffered) {
@@ -120,7 +120,7 @@ AskBidReader::get_next_candle(Candle& out, std::int64_t frame) {
 }
 
 std::int64_t
-AskBidReader::get_last_epoch() const {
+AskBidMerger::get_last_epoch() const {
 	if (has_last_ask && has_last_bid) {
 		return std::max(last_ask.epoch, last_bid.epoch);
 	}

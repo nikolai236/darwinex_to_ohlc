@@ -32,23 +32,25 @@ struct TickEntry {
 bool
 get_tick_entry(MultiFileReader& in, TickEntry& out);
 
-class AskBidReader {
+class AskBidMerger {
 public:
-	AskBidReader() = delete;
-	AskBidReader(MultiFileReader&& ask_stream, MultiFileReader&& bid_stream):
-		ask_stream(std::move(ask_stream)), bid_stream(std::move(bid_stream))
+	AskBidMerger() = delete;
+	AskBidMerger(MultiFileReader&& ask_stream, MultiFileReader&& bid_stream, std::int64_t frame):
+		ask_stream(std::move(ask_stream)), bid_stream(std::move(bid_stream)), frame(frame)
 	{
 		init();
 	}
 
 	bool
-	get_next_candle(Candle& out, std::int64_t frame=5000);
+	get_next_candle(Candle& out);
 
 private:
 	static constexpr std::int64_t GAP_RESET = 1000 * 60; // reset on 1m gaps
 
 	MultiFileReader ask_stream;
 	MultiFileReader bid_stream;
+
+	std::int64_t frame;
 
 	bool has_curr_ask = false;
 	TickEntry curr_ask{};
